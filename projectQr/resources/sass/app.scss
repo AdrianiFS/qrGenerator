@@ -1,0 +1,29 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+
+// Variables
+@import "variables";
+
+// Bootstrap
+@import "~bootstrap/scss/bootstrap";
+img {
+    max-width: 252px;
+    max-height: 252px;
+    margin-bottom: 35px;
+}
+.qrContainer {
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    margin: 70px auto;
+}
+.qrContainer button,
+input {
+    overflow: visible;
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    height: 35px;
+    outline: none;
+    border: none;
+}
