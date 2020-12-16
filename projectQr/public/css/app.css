@@ -10909,21 +10909,60 @@ img {
   margin-bottom: 35px;
 }
 
-.qrContainer {
+.formInner {
   display: flex;
-  flex-direction: column;
-  width: 250px;
-  margin: 70px auto;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
 }
 
-.qrContainer button,
-input {
+.formInner input {
+  width: 30%;
+  position: relative;
   overflow: visible;
-  width: 100%;
   border-radius: 5px;
   margin-bottom: 10px;
   height: 35px;
   outline: none;
   border: none;
+}
+
+.formInner button {
+  width: 15%;
+  position: relative;
+  overflow: visible;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  height: 35px;
+  outline: none;
+  border: none;
+}
+
+.qrContainer--header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.qrContainer--header button {
+  margin-right: 5%;
+  position: relative;
+  overflow: visible;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  height: 35px;
+  outline: none;
+  border: none;
+}
+
+.createResourceForm {
+  display: none;
+}
+
+.activeForm {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 

@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+// use Illuminate\Support\Facades\Input;
+use Illuminate\Http\Request;
 use App\Http\Controllers\QrgeneratorController;
 /*
 |--------------------------------------------------------------------------
@@ -24,13 +26,18 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-
-
 //qr routes
-Route::get('/qrpages', [QrgeneratorController::class, 'index'])->name('qrpages.index');
+Route::get('/qrpages/index', [QrgeneratorController::class, 'index'])->name('qrpages.index');
 
-Route::post('/qrpages', [QrgeneratorController::class, 'store']);
+Route::get('/qrpages', [QrgeneratorController::class, 'queryString']);
 
-Route::get('/qrpages/create', [QrgeneratorController::class, 'create'])->name('qrpages.create');
+Route::get('/qrpages/qrform', [QrgeneratorController::class, 'qrform']);
 
-Route::get('/qrpages/{qrgenerator}', [QrgeneratorController::class, 'show'])->name('qrpages.show');
+Route::post('/qrpages', [QrgeneratorController::class, 'store'])->name('qrpages.store');
+
+// Route::get('/qrpages/create', [QrgeneratorController::class, 'create'])->name('qrpages.create');
+
+// Route::get('/qrpages/{qrgenerator}', [QrgeneratorController::class, 'show'])->name('qrpages.show');
+
+Route::post('/qrpages/updateAndStore/', [QrgeneratorController::class, 'updateAndStore'])->name('qrpages.updateAndStore');
+Route::post('/qrpages/gettingValues/', [QrgeneratorController::class, 'gettingValues'])->name('qrpages.updateAndStore');

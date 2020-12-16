@@ -58,3 +58,28 @@ const app = new Vue({
 // }
 
 
+
+// let addUrlBtn= qSelector('.addUrlBtn')
+// addUrlBtn.addEventListener('click',()=>{
+//     let createResourceForm = qSelector('.createResourceForm');
+//     createResourceForm.classList.add('activeForm');
+// })
+// let deleteCreateResourceForm= qSelector('.deleteCreateResourceForm');
+// deleteCreateResourceForm.addEventListener('click', (e)=>{
+//     e.preventDefault();
+//     let generatedUrl= qSelector('.generatedUrl');
+//     let redirectionUrl= qSelector('.redirectionUrl');
+//     generatedUrl.value='';
+//     redirectionUrl.value='';
+// })
+// let saveCreateResourceForm= qSelector('.saveCreateResourceForm');
+// saveCreateResourceForm.addEventListener('click', ()=>{
+//     // e.preventDefault();
+//     let createResourceForm = qSelector('.createResourceForm');
+//     createResourceForm.style.display='none';
+// console.log('this');
+// })
+
+// function qSelector (param){
+//   return  document.querySelector(param);
+// }
