@@ -16,6 +16,11 @@
 
     <!-- Styles -->
     <link href="<?php echo e(asset('css/app.css')); ?>" rel="stylesheet">
+
+    <link rel="icon" href="<?php echo e(URL::asset('images/qr.jpg')); ?>" type="images/x-icon" />
+
+
+
 </head>
 
 <body>
@@ -83,8 +88,16 @@
         </main>
     </div>
     <!-- Scripts -->
-    <script src="<?php echo e(asset('js/app.js')); ?>" defer></script>
+    <?php $token = csrf_token();
+    $param = preg_replace("/[\n\r]/", "", $token);
+    echo $param;
+    ?>
 
+    <script src="<?php echo e(asset('js/app.js')); ?>" defer></script>
+    <script>
+        window.token = <?php echo csrf_token(); ?>
+        console.log(trim(window.token));
+    </script>
     <script src="<?php echo e(asset('js/vendor/easy.qrcode.min.js')); ?>" type="text/javascript" charset="utf-8"></script>
 
 </body>

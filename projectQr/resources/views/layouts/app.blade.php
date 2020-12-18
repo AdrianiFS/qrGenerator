@@ -16,6 +16,11 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <link rel="icon" href="{{ URL::asset('images/qr.jpg') }}" type="images/x-icon" />
+
+
+
 </head>
 
 <body>
@@ -80,8 +85,16 @@
         </main>
     </div>
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <?php $token = csrf_token();
+    $param = preg_replace("/[\n\r]/", "", $token);
+    echo $param;
+    ?>
 
+    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script>
+        window.token = <?php echo csrf_token(); ?>
+        console.log(window.token);
+    </script>
     <script src="{{asset('js/vendor/easy.qrcode.min.js')}}" type="text/javascript" charset="utf-8"></script>
 
 </body>

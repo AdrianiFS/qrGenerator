@@ -24,30 +24,24 @@ class QrgeneratorController extends Controller
             return Redirect::to($url->redirectionUrl);
         }
     }
-    // public function create()
-    // {
-    //     return view('qrpages.create');
-    // }
+
     public function qrform()
     {
+
         $qrgenerator = Qrgenerator::latest()->get();
 
         return view('qrpages.qrform', compact('qrgenerator'));
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        Qrgenerator::create($this->validateFields());
-        // return redirect()->route('qrpages.index');
-        return view('qrpages.qrform');
+        $param = $request->input('generatedUrl');
+        $resource = Qrgenerator::where('generatedUrl', $param)->first();
+        if (!$resource) {
+            Qrgenerator::create($this->validateFields());
+        }
     }
-    // public function update(Qrgenerator $qrgenerator)
-    // {
-    //     $qrgenerator = new Qrgenerator();
-    //     $qrgenerator->redirectionUrl = request('redirectionUrl');
-    //     $qrgenerator->save();
-    //     return redirect()->route('qrpages.index');
-    // }
+
     protected function validateFields()
     {
         return request()->validate([
@@ -55,38 +49,35 @@ class QrgeneratorController extends Controller
             'redirectionUrl' => 'required'
         ]);
     }
-    public function createResource()
-    {
-        Qrgenerator::create($this->validateFields());
-        return view('qrpages.qrform');
-    }
+
     protected function updateResource()
     {
         $paramOrigin = request('generatedUrl');
         $paramRedirection = request('redirectionUrl');
-        if (strlen($paramOrigin) > 0 && strlen($paramRedirection) > 0) {
-            $affected = DB::table('qrgenerators')
-                ->where('generatedUrl', $paramOrigin)
-                ->update(['redirectionUrl' => $paramRedirection]);
-            return $affected;
-            // return view('qrpages.qrform');
-        }
+        $affected = Qrgenerator::where('generatedUrl', $paramOrigin)
+            ->update(['redirectionUrl' => $paramRedirection]);
+        return $affected;
     }
-    protected function updateAndStore(Request $request)
+
+
+    protected function delete()
     {
-        $param = $request->input('generatedUrl');
-        $resource = DB::table('qrgenerators')->where('generatedUrl', $param)->first();
-        if (!$resource) {
-            return  $this->createResource();
-        } else {
-            return $this->updateResource();
-        }
-        // return view('qrpages.qrform');
+        $paramOrigin = request('generatedUrl');
+        Qrgenerator::where('generatedUrl', $paramOrigin)->delete();
     }
     protected function gettingValues(Request $request)
     {
         $input = $request->all();
-        dd($input);
+        $param = $request->input('generatedUrl');
+
+        if ($input['action'] === 'update') {
+            $this->updateResource();
+        }
+        if ($input['action'] === 'delete') {
+            $this->delete();
+        }
+        return redirect()->route('qrpages.qrform');
     }
 }
 // validar si url es correcta, si el campo no esta vacio, y q ambso datos existen al enviar
+// enviar mensaje de error a la vista si recourso existe o por cada variacion o error 

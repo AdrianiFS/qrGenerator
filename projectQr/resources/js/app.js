@@ -22,6 +22,7 @@ Vue.component(
     "example-component",
     require("./components/ExampleComponent.vue").default
 );
+Vue.component('create-form',require('./components/CreateForm.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -58,28 +59,3 @@ const app = new Vue({
 // }
 
 
-
-// let addUrlBtn= qSelector('.addUrlBtn')
-// addUrlBtn.addEventListener('click',()=>{
-//     let createResourceForm = qSelector('.createResourceForm');
-//     createResourceForm.classList.add('activeForm');
-// })
-// let deleteCreateResourceForm= qSelector('.deleteCreateResourceForm');
-// deleteCreateResourceForm.addEventListener('click', (e)=>{
-//     e.preventDefault();
-//     let generatedUrl= qSelector('.generatedUrl');
-//     let redirectionUrl= qSelector('.redirectionUrl');
-//     generatedUrl.value='';
-//     redirectionUrl.value='';
-// })
-// let saveCreateResourceForm= qSelector('.saveCreateResourceForm');
-// saveCreateResourceForm.addEventListener('click', ()=>{
-//     // e.preventDefault();
-//     let createResourceForm = qSelector('.createResourceForm');
-//     createResourceForm.style.display='none';
-// console.log('this');
-// })
-
-// function qSelector (param){
-//   return  document.querySelector(param);
-// }

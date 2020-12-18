@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <title>Laravel</title>
 
     <!-- Fonts -->
@@ -516,6 +517,13 @@
             </div>
         </div>
     </div>
+    <script>
+        window.Laravel = <?php echo json_encode([
+                                'csrfToken' => csrf_token(),
+                            ]); ?>
+    </script>
+    <script src="<?php echo e(asset('js/app.js')); ?>"></script>
+
 </body>
 
 </html><?php /**PATH /Users/Adrian/Desktop/qrApp/projectQr/resources/views/welcome.blade.php ENDPATH**/ ?>

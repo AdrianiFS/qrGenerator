@@ -31,13 +31,13 @@ Route::get('/qrpages/index', [QrgeneratorController::class, 'index'])->name('qrp
 
 Route::get('/qrpages', [QrgeneratorController::class, 'queryString']);
 
-Route::get('/qrpages/qrform', [QrgeneratorController::class, 'qrform']);
+Route::get('/qrpages/qrform', [QrgeneratorController::class, 'qrform'])->name('qrpages.qrform');
 
-Route::post('/qrpages', [QrgeneratorController::class, 'store'])->name('qrpages.store');
+Route::post('/qrpages/store', [QrgeneratorController::class, 'store'])->name('qrpages.store');
 
 // Route::get('/qrpages/create', [QrgeneratorController::class, 'create'])->name('qrpages.create');
 
 // Route::get('/qrpages/{qrgenerator}', [QrgeneratorController::class, 'show'])->name('qrpages.show');
 
-Route::post('/qrpages/updateAndStore/', [QrgeneratorController::class, 'updateAndStore'])->name('qrpages.updateAndStore');
-Route::post('/qrpages/gettingValues/', [QrgeneratorController::class, 'gettingValues'])->name('qrpages.updateAndStore');
+// Route::post('/qrpages/updateAndStore/', [QrgeneratorController::class, 'updateAndStore'])->name('qrpages.updateAndStore');
+Route::post('/qrpages', [QrgeneratorController::class, 'gettingValues']);
