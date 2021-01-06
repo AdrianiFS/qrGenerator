@@ -518,9 +518,7 @@
         </div>
     </div>
     <script>
-        window.Laravel = <?php echo json_encode([
-                                'csrfToken' => csrf_token(),
-                            ]); ?>
+        window.Laravel = <?php echo json_encode(['csrfToken' => csrf_token(),]); ?>
     </script>
     <script src="<?php echo e(asset('js/app.js')); ?>"></script>
 

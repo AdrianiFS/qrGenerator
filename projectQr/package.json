@@ -24,6 +24,6 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "easyqrcodejs": "^4.0.0"
+        "easyqrcodejs": "^4.3.0"
     }
 }

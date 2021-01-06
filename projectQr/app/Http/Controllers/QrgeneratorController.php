@@ -12,7 +12,8 @@ class QrgeneratorController extends Controller
     public function index()
     {
         $qrgenerator = Qrgenerator::latest()->get();
-        return view('qrpages.index', compact('qrgenerator'));
+        return $qrgenerator;
+        // return view('qrpages.index', compact('qrgenerator'));
     }
     public function queryString(Request $request)
     {
@@ -24,15 +25,12 @@ class QrgeneratorController extends Controller
             return Redirect::to($url->redirectionUrl);
         }
     }
-
     public function qrform()
     {
-
         $qrgenerator = Qrgenerator::latest()->get();
 
         return view('qrpages.qrform', compact('qrgenerator'));
     }
-
     public function store(Request $request)
     {
         $param = $request->input('generatedUrl');
@@ -41,7 +39,6 @@ class QrgeneratorController extends Controller
             Qrgenerator::create($this->validateFields());
         }
     }
-
     protected function validateFields()
     {
         return request()->validate([
@@ -49,7 +46,6 @@ class QrgeneratorController extends Controller
             'redirectionUrl' => 'required'
         ]);
     }
-
     protected function updateResource()
     {
         $paramOrigin = request('generatedUrl');
@@ -58,26 +54,30 @@ class QrgeneratorController extends Controller
             ->update(['redirectionUrl' => $paramRedirection]);
         return $affected;
     }
-
-
     protected function delete()
     {
         $paramOrigin = request('generatedUrl');
         Qrgenerator::where('generatedUrl', $paramOrigin)->delete();
     }
-    protected function gettingValues(Request $request)
-    {
-        $input = $request->all();
-        $param = $request->input('generatedUrl');
+    // protected function gettingValues(Request $request)
+    // {
+    //     $input = $request->all();
+    //     $param = $request->input('generatedUrl');
 
-        if ($input['action'] === 'update') {
-            $this->updateResource();
-        }
-        if ($input['action'] === 'delete') {
-            $this->delete();
-        }
-        return redirect()->route('qrpages.qrform');
-    }
+    //     if ($input['action'] === 'update') {
+    //         $this->updateResource();
+    //     }
+    //     if ($input['action'] === 'delete') {
+    //         $this->delete();
+    //     }
+    //     return redirect()->route('qrpages.qrform');
+    // }
 }
 // validar si url es correcta, si el campo no esta vacio, y q ambso datos existen al enviar
 // enviar mensaje de error a la vista si recourso existe o por cada variacion o error 
+// enviar al servidor
+// 1. tipo de action(update, delete), pq son valores q existen
+
+// 2. q contienen las acciones(generatedUrl)
+
+// 3. verificar ambos valores en el servidor 

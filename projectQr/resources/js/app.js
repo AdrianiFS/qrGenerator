@@ -24,6 +24,11 @@ Vue.component(
 );
 Vue.component('create-form',require('./components/CreateForm.vue').default);
 
+Vue.component('update-delete',require('./components/UpdateAndDeleteForm.vue').default);
+Vue.component('mega-form',require('./components/MegaForm.vue').default);
+Vue.component('qr-generator',require('./components/QrGenerator.vue').default);
+
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

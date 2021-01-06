@@ -29,15 +29,15 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 //qr routes
 Route::get('/qrpages/index', [QrgeneratorController::class, 'index'])->name('qrpages.index');
 
-Route::get('/qrpages', [QrgeneratorController::class, 'queryString']);
+Route::get('/qrpages/queryString', [QrgeneratorController::class, 'queryString']);
 
-Route::get('/qrpages/qrform', [QrgeneratorController::class, 'qrform'])->name('qrpages.qrform');
+Route::get('/qrpages/qrform', [QrgeneratorController::class, 'qrform'])->name('qrpages.qrform')->middleware('auth');
+// Route::get('/qrpages/qrform', [QrgeneratorController::class, 'qrform'])->name('qrpages.qrform')->middleware('auth');
 
 Route::post('/qrpages/store', [QrgeneratorController::class, 'store'])->name('qrpages.store');
-
-// Route::get('/qrpages/create', [QrgeneratorController::class, 'create'])->name('qrpages.create');
+Route::post('/qrpages/updateResource', [QrgeneratorController::class, 'updateResource'])->name('qrpages.updateResource');
+Route::post('/qrpages/delete', [QrgeneratorController::class, 'delete'])->name('qrpages.delete');
 
 // Route::get('/qrpages/{qrgenerator}', [QrgeneratorController::class, 'show'])->name('qrpages.show');
 
-// Route::post('/qrpages/updateAndStore/', [QrgeneratorController::class, 'updateAndStore'])->name('qrpages.updateAndStore');
-Route::post('/qrpages', [QrgeneratorController::class, 'gettingValues']);
+Route::post('/qrpages/gettingValues', [QrgeneratorController::class, 'gettingValues']);

@@ -1,8 +1,6 @@
 <template>
     <div>
-        <form class="" @submit="formSubmit">
-            <!-- <input type="hidden" name="_token" :value="csrf" /> -->
-            <!-- <input type="hidden" id="csrf_token" value="{{ csrf_token() }}"/> -->
+        <form @submit.prevent="formSubmit">
             <div class="formInner createFormContainer">
                 <input
                     type="text"
@@ -18,30 +16,33 @@
                     v-model="redirectionUrl"
                     ref="redirectionUrl"
                 />
-                <button class="qrBtn" type="submit">Save</button>
-                <button class="" @click.prevent="resetForm">Reset</button>
+                <button class="qrBtn" type="submit">
+                    Save
+                </button>
+                <button class="" @click.prevent="resetForm">
+                    Reset
+                </button>
             </div>
         </form>
+        <update-delete :urlData="urlData"></update-delete>
     </div>
 </template>
-
 <script>
 export default {
-    mounted() {
-        // console.log(window.Laravel);
-        // console.log("gagnam style");
-    },
+    mounted() {},
     data() {
         return {
             generatedUrl: "",
             redirectionUrl: "",
             output: "",
-            csrf: document
-                .querySelector('meta[name="csrf-token"]')
-                .getAttribute("content")
+            token: window.token,
+            urlData: ""
         };
     },
     methods: {
+        addResourceToBottomForm() {
+            this.$emit("addResourceToBottomForm", this.urlData);
+        },
         resetForm() {
             this.$refs["generatedUrl"].value = "";
             this.$refs["redirectionUrl"].value = "";
@@ -50,13 +51,18 @@ export default {
             axios
                 .post("/qrpages/store", {
                     generatedUrl: this.generatedUrl,
-                    redirectionUrl: this.redirectionUrl,
-                    headers: {
-                        token: this.csrf
-                    }
+                    redirectionUrl: this.redirectionUrl
+                    // headers: {
+                    //     token: this.token
+                    //     // ver que parametro de token y su nombre y si hay q mandarlo a laravel
+                    // }
                 })
                 .then(response => {
                     response.data;
+                    console.log(response, "en create form");
+                    this.urlData = response;
+                    // usar response.data para generar un nuevo elemento en el dom
+                    //  una vez post resuelto en el then, la respuesta genera un nuevo formulario con los datos actuales de la respuesta
                 })
                 .catch(error => {
                     console.log(error.response);
@@ -65,5 +71,4 @@ export default {
     }
 };
 </script>
-
 <style></style>

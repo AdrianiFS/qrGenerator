@@ -4,23 +4,16 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <title>{{ config('app.name', 'Laravel') }}</title>
-
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-
     <link rel="icon" href="{{ URL::asset('images/qr.jpg') }}" type="images/x-icon" />
-
-
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -33,13 +26,10 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
                     </ul>
-
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
@@ -49,7 +39,6 @@
                             <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                         </li>
                         @endif
-
                         @if (Route::has('register'))
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
@@ -60,13 +49,11 @@
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                 {{ Auth::user()->name }}
                             </a>
-
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                     {{ __('Logout') }}
                                 </a>
-
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                     @csrf
                                 </form>
@@ -77,25 +64,21 @@
                 </div>
             </div>
         </nav>
-
         <main class="py-4">
             @yield('content')
             @yield('createContent')
             @yield('indexContent')
+            @yield('UpdateAndDeleteForm')
         </main>
     </div>
     <!-- Scripts -->
-    <?php $token = csrf_token();
-    $param = preg_replace("/[\n\r]/", "", $token);
-    echo $param;
-    ?>
-
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script>
-        window.token = <?php echo csrf_token(); ?>
-        console.log(window.token);
+        window.token = `<?php echo csrf_token(); ?>`;
     </script>
     <script src="{{asset('js/vendor/easy.qrcode.min.js')}}" type="text/javascript" charset="utf-8"></script>
+    <script src="https://kit.fontawesome.com/8ef165f656.js" crossorigin="anonymous"></script>
+
 
 </body>
 
