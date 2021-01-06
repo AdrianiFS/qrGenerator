@@ -1,8 +1,6 @@
 <template>
     <div class="upAndDelFormContainer">
-   
     <img id="myImg" src="/images/blank-qr-code.jpg" alt="" />
-
         <h2>Create URL</h2>
         <form>
             <div class="formInner createFormContainer">
@@ -41,29 +39,29 @@
                 class="formInner updateFormInner"
                 v-for="(url, index) in responseAxios"
                 :key="index"
-               
             >
-              <div ref="qrcode"></div>
+            <!-- pag tiene q una referencia del qr -->
+              <!-- <div ref="qrcode"></div> -->
                 <!-- <button  class="printIcon"> -->
                   <a :href="link" target="_blank" ref="qrLink" id="qrLink" >
                   <i class="fas fa-print"></i>
                   </a>
+              
                 <!-- </button> -->
-                 <!-- <div ref="qrcode"></div> -->
                 <input
+                    id="generatedUrl"
                     type="text"
                     class=" qrInput"
                     :value="url.generatedUrl"
                     ref="generatedUrl"
                     disabled
                 />
-        
                 <input
                     type="text"
                     class="qrInput"
                     :value="url.redirectionUrl"
                     ref="redirectionUrl"
-                   id=""
+                    id=""
                 />
                 <button
                     class="saveBtn"
@@ -110,14 +108,15 @@ export default {
             msgOne: "",
             status200: "",
             errors: [],
-            link:'queryString?generatedUrl=piso1'
+            link:'queryString?generatedUrl=piso1',
+            text:this.$refs.generatedUrl
         };
     },
     mounted() {
         this.loadUrl();
         this.displayQrCode()
     },
-    methods: {
+methods: {
         loadUrl() {
             axios
                 .get("/qrpages/index")
@@ -130,9 +129,7 @@ export default {
         },
         updateResource(refs, index) {
             const generatedUrl = refs.generatedUrl[index].value;
-            const redirectionUrl = refs.redirectionUrl[index].value;
-            // const succesOrFail = refs.succesOrFail[index];
-        
+            const redirectionUrl = refs.redirectionUrl[index].value;        
             axios
                 .post("/qrpages/updateResource", {
                     generatedUrl: generatedUrl,
@@ -142,31 +139,9 @@ export default {
                     response;
                     this.responseStatus = response.status;
                     console.log(this.responseStatus, "actualizar");
-                    // console.log(response);
                     this.loadUrl();
                     this.checkForm(redirectionUrl);
-
-                    //let displayMessage= refs.displayMessage[index]
-                    // console.log(displayMessage);
-
-                    // console.log(this.responseAxios[index]);
-                    // if (response.data === 1) {
-                    //     this.$refs["url.id"].forEach(el => {
-                    //         el.innerHTML = `<p>data sent</p>`;
-                    //     });
-                    // }
-                    // if (response.data === 0) {
-                    // this.$refs["url.id"].forEach(el => {
-                    //         el.innerHTML = `<p>data not sent</p>`;
-                    //     });
-                    // }
-                    // if (response.data == 1) {
-                    //     succesOrFail.innerHTML = `<p style="color:blue">Data Sent</p>`;
-                    //     console.log(succesOrFail);
-                    // }
-                    // if (response.data == 0) {
-                    //     succesOrFail.innerHTML = `<p style="color:red">Data not Sent</p>`;
-                    // }
+             console.log(this.$refs['generatedUrl'].value);
                 })
                 .catch(error => {
                     console.log(error);
@@ -180,8 +155,7 @@ export default {
                 })
                 .then(response => {
                     response.status;
-                    // console.log(generatedUrl);
-                    //   this.deleteChanges(generatedUrl)
+              
                 })
                 .catch(error => {
                     console.log(error);
@@ -202,8 +176,6 @@ export default {
                     this.urlData = response;
                     this.loadUrl();
                     this.updateChangesWhenCreate();
-                    // usar response.data para generar un nuevo elemento en el dom
-                    //  una vez post resuelto en el then, la respuesta genera un nuevo formulario con los datos actuales de la respuesta
                 })
                 .catch(error => {
                     console.log(error.response);
@@ -224,7 +196,6 @@ export default {
         },
         checkForm(refs) {
             this.errors = [];
-// mettre messages d'erreur display none sauf la ou il faut 
             if (this.responseStatus === 200) {
                 this.status200 = "Sent properly to DataBase";
             }
@@ -235,31 +206,27 @@ export default {
                 this.errors.push("RedirectionUrl required");
                  this.errors.forEach(e => console.log(e, 'foreach'));
             }
-            // console.log(this.errors);
             if (!this.errors.length) {
                 return true;
             }
         },
         displayQrCode() {
-        // const generatedUrl = this.$refs.generatedUrl;
+             let generatedUrl = document.getElementById('generatedUrl')
+                    // console.log(qrInput.value);
+                            // text: this.$refs.generatedUrl.value,
+
              let options = {
-        text: 'generatedUrl',
-        width: 30,
-        height: 30,
+        text: 'qrInput.value',
+        width: 100,
+        height:100,
         colorDark: "#000",
         colorLight: "#fff",
-        correctLevel: QRCode.CorrectLevel.H, // L, M, Q, H
-        dotScale: 1, // Must be greater than 0, less than or equal to 1. default is 1
-  
+        correctLevel: QRCode.CorrectLevel.H,
+        dotScale: 1, 
       };
    new QRCode(this.$refs.qrcode, options)
-
         }
     }
-    // variaciones de validaciones
-    // 200 ok
-    // >=300 no ok
-    // ver q tipo de error a dado
 };
 </script>
 <style>

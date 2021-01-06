@@ -2116,8 +2116,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2135,7 +2133,8 @@ __webpack_require__.r(__webpack_exports__);
       msgOne: "",
       status200: "",
       errors: [],
-      link: 'queryString?generatedUrl=piso1'
+      link: 'queryString?generatedUrl=piso1',
+      text: this.$refs.generatedUrl
     };
   },
   mounted: function mounted() {
@@ -2157,39 +2156,20 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       var generatedUrl = refs.generatedUrl[index].value;
-      var redirectionUrl = refs.redirectionUrl[index].value; // const succesOrFail = refs.succesOrFail[index];
-
+      var redirectionUrl = refs.redirectionUrl[index].value;
       axios.post("/qrpages/updateResource", {
         generatedUrl: generatedUrl,
         redirectionUrl: redirectionUrl
       }).then(function (response) {
         response;
         _this2.responseStatus = response.status;
-        console.log(_this2.responseStatus, "actualizar"); // console.log(response);
+        console.log(_this2.responseStatus, "actualizar");
 
         _this2.loadUrl();
 
-        _this2.checkForm(redirectionUrl); //let displayMessage= refs.displayMessage[index]
-        // console.log(displayMessage);
-        // console.log(this.responseAxios[index]);
-        // if (response.data === 1) {
-        //     this.$refs["url.id"].forEach(el => {
-        //         el.innerHTML = `<p>data sent</p>`;
-        //     });
-        // }
-        // if (response.data === 0) {
-        // this.$refs["url.id"].forEach(el => {
-        //         el.innerHTML = `<p>data not sent</p>`;
-        //     });
-        // }
-        // if (response.data == 1) {
-        //     succesOrFail.innerHTML = `<p style="color:blue">Data Sent</p>`;
-        //     console.log(succesOrFail);
-        // }
-        // if (response.data == 0) {
-        //     succesOrFail.innerHTML = `<p style="color:red">Data not Sent</p>`;
-        // }
+        _this2.checkForm(redirectionUrl);
 
+        console.log(_this2.$refs['generatedUrl'].value);
       })["catch"](function (error) {
         console.log(error);
       });
@@ -2199,8 +2179,7 @@ __webpack_require__.r(__webpack_exports__);
       axios.post("/qrpages/delete", {
         generatedUrl: generatedUrl
       }).then(function (response) {
-        response.status; // console.log(generatedUrl);
-        //   this.deleteChanges(generatedUrl)
+        response.status;
       })["catch"](function (error) {
         console.log(error);
       });
@@ -2221,9 +2200,7 @@ __webpack_require__.r(__webpack_exports__);
 
         _this3.loadUrl();
 
-        _this3.updateChangesWhenCreate(); // usar response.data para generar un nuevo elemento en el dom
-        //  una vez post resuelto en el then, la respuesta genera un nuevo formulario con los datos actuales de la respuesta
-
+        _this3.updateChangesWhenCreate();
       })["catch"](function (error) {
         console.log(error.response);
       });
@@ -2239,7 +2216,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     checkForm: function checkForm(refs) {
-      this.errors = []; // mettre messages d'erreur display none sauf la ou il faut 
+      this.errors = [];
 
       if (this.responseStatus === 200) {
         this.status200 = "Sent properly to DataBase";
@@ -2254,33 +2231,28 @@ __webpack_require__.r(__webpack_exports__);
         this.errors.forEach(function (e) {
           return console.log(e, 'foreach');
         });
-      } // console.log(this.errors);
-
+      }
 
       if (!this.errors.length) {
         return true;
       }
     },
     displayQrCode: function displayQrCode() {
-      // const generatedUrl = this.$refs.generatedUrl;
+      var generatedUrl = document.getElementById('generatedUrl'); // console.log(qrInput.value);
+      // text: this.$refs.generatedUrl.value,
+
       var options = {
-        text: 'generatedUrl',
-        width: 30,
-        height: 30,
+        text: 'qrInput.value',
+        width: 100,
+        height: 100,
         colorDark: "#000",
         colorLight: "#fff",
         correctLevel: easyqrcodejs__WEBPACK_IMPORTED_MODULE_0__["CorrectLevel"].H,
-        // L, M, Q, H
-        dotScale: 1 // Must be greater than 0, less than or equal to 1. default is 1
-
+        dotScale: 1
       };
       new easyqrcodejs__WEBPACK_IMPORTED_MODULE_0__(this.$refs.qrcode, options);
     }
-  } // variaciones de validaciones
-  // 200 ok
-  // >=300 no ok
-  // ver q tipo de error a dado
-
+  }
 });
 
 /***/ }),
@@ -38980,8 +38952,6 @@ var render = function() {
           "div",
           { key: index, staticClass: "formInner updateFormInner" },
           [
-            _c("div", { ref: "qrcode", refInFor: true }),
-            _vm._v(" "),
             _c(
               "a",
               {
@@ -38996,7 +38966,7 @@ var render = function() {
               ref: "generatedUrl",
               refInFor: true,
               staticClass: " qrInput",
-              attrs: { type: "text", disabled: "" },
+              attrs: { id: "generatedUrl", type: "text", disabled: "" },
               domProps: { value: url.generatedUrl }
             }),
             _vm._v(" "),
