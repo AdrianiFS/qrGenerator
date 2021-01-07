@@ -15,11 +15,17 @@ data() {
     return {
         test:'hola',
         responseAxios:[],
-        urlResponse: null
+        urlResponse: []
     }
-},mounted () {
-this.getParam();
-this.handleResponse()
+},
+// mounted () {
+//   this.getParam();
+// },
+
+created () {
+      this.getParam();
+   this.handleResponse()
+// se renderiza en dom, pero da objeto vacio, chino hdp
 },
 methods: {
     getParam() {

@@ -2294,12 +2294,15 @@ __webpack_require__.r(__webpack_exports__);
     return {
       test: 'hola',
       responseAxios: [],
-      urlResponse: null
+      urlResponse: []
     };
   },
-  mounted: function mounted() {
+  // mounted () {
+  //   this.getParam();
+  // },
+  created: function created() {
     this.getParam();
-    this.handleResponse();
+    this.handleResponse(); // se renderiza en dom, pero da objeto vacio, chino hdp
   },
   methods: {
     getParam: function getParam() {
