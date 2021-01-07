@@ -117,7 +117,6 @@ export default {
             errors: [],
             paramToQueryString:'',
             link:`qrGenerator?generatedUrl=${generatedUrl.value}`,
-          
         };
     },
     mounted() {
