@@ -72,6 +72,7 @@
             <?php echo $__env->yieldContent('createContent'); ?>
             <?php echo $__env->yieldContent('indexContent'); ?>
             <?php echo $__env->yieldContent('UpdateAndDeleteForm'); ?>
+            <?php echo $__env->yieldContent('qrGenerator'); ?>
         </main>
     </div>
     <!-- Scripts -->

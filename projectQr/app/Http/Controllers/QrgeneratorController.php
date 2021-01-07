@@ -59,6 +59,12 @@ class QrgeneratorController extends Controller
         $paramOrigin = request('generatedUrl');
         Qrgenerator::where('generatedUrl', $paramOrigin)->delete();
     }
+    protected function qrGenerator(Request $request)
+    {
+        $urlWithQueryString = $request->fullUrl();
+        // return $urlWithQueryString;
+        return view('qrpages.qrGenerator', compact('urlWithQueryString'));
+    }
     // protected function gettingValues(Request $request)
     // {
     //     $input = $request->all();

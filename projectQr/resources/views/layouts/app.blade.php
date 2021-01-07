@@ -69,6 +69,7 @@
             @yield('createContent')
             @yield('indexContent')
             @yield('UpdateAndDeleteForm')
+            @yield('qrGenerator')
         </main>
     </div>
     <!-- Scripts -->

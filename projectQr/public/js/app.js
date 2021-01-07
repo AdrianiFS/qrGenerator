@@ -2116,16 +2116,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+// vista laravel, tiene un comp vuejs con prop contiene input data
 
+var generatedUrl = document.querySelectorAll('.generatedUrl');
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      generatedUrl: "",
-      redirectionUrl: "",
       responseAxios: [],
       updateRes: "",
       generatedUrlCreate: "",
       redirectionUrlCreate: "",
+      generatedUrl: "",
+      redirectionUrl: "",
       output: "",
       token: window.token,
       urlData: "",
@@ -2133,8 +2137,8 @@ __webpack_require__.r(__webpack_exports__);
       msgOne: "",
       status200: "",
       errors: [],
-      link: 'queryString?generatedUrl=piso1',
-      text: this.$refs.generatedUrl
+      paramToQueryString: '',
+      link: "qrGenerator?generatedUrl=".concat(generatedUrl.value)
     };
   },
   mounted: function mounted() {
@@ -2147,7 +2151,7 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get("/qrpages/index").then(function (_ref) {
         var data = _ref.data;
-        _this.responseAxios = data;
+        _this.responseAxios = data; //   console.log( data, 'load url');
       })["catch"](function (error) {
         console.log(error);
       });
@@ -2163,13 +2167,14 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         response;
         _this2.responseStatus = response.status;
-        console.log(_this2.responseStatus, "actualizar");
 
         _this2.loadUrl();
 
-        _this2.checkForm(redirectionUrl);
+        _this2.checkForm(redirectionUrl); // this.paramToQueryString = generatedUrl;
+        // console.log(this.paramToQueryString);
+        // console.log(this.link);
+        //error en consola cuando paso paramToQueryString en link, dice que no esta definido
 
-        console.log(_this2.$refs['generatedUrl'].value);
       })["catch"](function (error) {
         console.log(error);
       });
@@ -2238,18 +2243,23 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     displayQrCode: function displayQrCode() {
-      var generatedUrl = document.getElementById('generatedUrl'); // console.log(qrInput.value);
-      // text: this.$refs.generatedUrl.value,
+      var generatedUrl = document.querySelectorAll('.generatedUrl'); //  let generatedUrl = document.getElementById('generatedUrl')
+      // url nueva con query string, la nueva vista va reconocer el dato pq viene del controlador, luego uso axios y el dato se lo mando al api 
+      //  a href="localhost/qrpages?var= generatedUrl" 
+      //  axios->get->su propia url
 
       var options = {
-        text: 'qrInput.value',
+        // text: generatedUrl.value,
+        // text: this.$refs.generatedUrl.value,
+        text: 'qrGenerator?generatedUrl=',
         width: 100,
         height: 100,
         colorDark: "#000",
         colorLight: "#fff",
         correctLevel: easyqrcodejs__WEBPACK_IMPORTED_MODULE_0__["CorrectLevel"].H,
         dotScale: 1
-      };
+      }; //   let myImg = document.getElementById('myImg');
+
       new easyqrcodejs__WEBPACK_IMPORTED_MODULE_0__(this.$refs.qrcode, options);
     }
   }
@@ -2272,8 +2282,39 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
-/* harmony default export */ __webpack_exports__["default"] = ({// get text from megaform component
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      test: 'hola',
+      responseAxios: [],
+      urlResponse: null
+    };
+  },
+  mounted: function mounted() {
+    this.getParam();
+    this.handleResponse();
+  },
+  methods: {
+    getParam: function getParam() {
+      var _this = this;
+
+      axios.get("qrGenerator?generatedUrl=undefined").then(function (response) {
+        _this.responseAxios = response; //    console.log(response.data.data);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    handleResponse: function handleResponse() {
+      console.log(this.responseAxios, 'handleResponse');
+    }
+  }
 });
 
 /***/ }),
@@ -38857,10 +38898,6 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "upAndDelFormContainer" }, [
-    _c("img", {
-      attrs: { id: "myImg", src: "/images/blank-qr-code.jpg", alt: "" }
-    }),
-    _vm._v(" "),
     _c("h2", [_vm._v("Create URL")]),
     _vm._v(" "),
     _c("form", [
@@ -38965,7 +39002,7 @@ var render = function() {
             _c("input", {
               ref: "generatedUrl",
               refInFor: true,
-              staticClass: " qrInput",
+              staticClass: " qrInput generatedUrl",
               attrs: { id: "generatedUrl", type: "text", disabled: "" },
               domProps: { value: url.generatedUrl }
             }),
@@ -39020,14 +39057,9 @@ var render = function() {
                     _c(
                       "ul",
                       _vm._l(_vm.errors, function(error) {
-                        return _c(
-                          "li",
-                          {
-                            key: error,
-                            class: { displayMessage: _vm.errors.length <= 0 }
-                          },
-                          [_vm._v(_vm._s(error) + " ")]
-                        )
+                        return _c("li", { key: error }, [
+                          _vm._v(_vm._s(error) + " ")
+                        ])
                       }),
                       0
                     )
@@ -39065,7 +39097,32 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { ref: "qrcode" }, [_c("h1", [_vm._v("hola")])])
+  return _c(
+    "div",
+    { staticClass: "main" },
+    [
+      _c("div", { ref: "qrcode" }),
+      _vm._v(" "),
+      _c("h1", [_vm._v("qr-generator Component")]),
+      _vm._v(" "),
+      _vm._l(_vm.responseAxios, function(url) {
+        return _c("div", { key: url.id }, [_c("p", [_vm._v(_vm._s(url.url))])])
+      }),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          on: {
+            click: function($event) {
+              return _vm.handleResponse()
+            }
+          }
+        },
+        [_vm._v("click")]
+      )
+    ],
+    2
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

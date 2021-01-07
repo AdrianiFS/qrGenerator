@@ -41,3 +41,5 @@ Route::post('/qrpages/delete', [QrgeneratorController::class, 'delete'])->name('
 // Route::get('/qrpages/{qrgenerator}', [QrgeneratorController::class, 'show'])->name('qrpages.show');
 
 Route::post('/qrpages/gettingValues', [QrgeneratorController::class, 'gettingValues']);
+// routa -> api(param input)
+Route::get('/qrpages/qrGenerator', [QrgeneratorController::class, 'qrGenerator'])->name('qrpages.qrGenerator');

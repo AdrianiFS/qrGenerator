@@ -1,6 +1,5 @@
 <template>
     <div class="upAndDelFormContainer">
-    <img id="myImg" src="/images/blank-qr-code.jpg" alt="" />
         <h2>Create URL</h2>
         <form>
             <div class="formInner createFormContainer">
@@ -40,18 +39,21 @@
                 v-for="(url, index) in responseAxios"
                 :key="index"
             >
+            <!-- enviar datos a nueva pag. con info de qr a renderizar -->
             <!-- pag tiene q una referencia del qr -->
               <!-- <div ref="qrcode"></div> -->
                 <!-- <button  class="printIcon"> -->
                   <a :href="link" target="_blank" ref="qrLink" id="qrLink" >
                   <i class="fas fa-print"></i>
                   </a>
-              
+
+              <!-- {{url.generatedUrl}} -->
                 <!-- </button> -->
+            <!-- :value="url.generatedUrl"  -->
                 <input
                     id="generatedUrl"
                     type="text"
-                    class=" qrInput"
+                    class=" qrInput generatedUrl"
                     :value="url.generatedUrl"
                     ref="generatedUrl"
                     disabled
@@ -81,26 +83,31 @@
                 <p v-if="errors.length">
                     <b>Please correct the following error(s):</b>
                     <ul>
-                        <li  v-for="error in errors" :key="error"  :class="{displayMessage: errors.length <= 0}">{{ error }} </li>
+                        <li  v-for="error in errors" :key="error">{{ error }} </li>
                     </ul>
                 </p>
-                     <p >{{status200}}</p>
+                <p >{{status200}}</p>
             </div> 
             </div>
         </form>
     </div>
 </template>
 <script>
+
+// vista laravel, tiene un comp vuejs con prop contiene input data
+
 import * as QRCode from 'easyqrcodejs'  
+ let generatedUrl = document.querySelectorAll('.generatedUrl')
 export default {
+
     data() {
         return {
-            generatedUrl: "",
-            redirectionUrl: "",
             responseAxios: [],
             updateRes: "",
             generatedUrlCreate: "",
             redirectionUrlCreate: "",
+            generatedUrl: "",
+            redirectionUrl: "",
             output: "",
             token: window.token,
             urlData: "",
@@ -108,8 +115,9 @@ export default {
             msgOne: "",
             status200: "",
             errors: [],
-            link:'queryString?generatedUrl=piso1',
-            text:this.$refs.generatedUrl
+            paramToQueryString:'',
+            link:`qrGenerator?generatedUrl=${generatedUrl.value}`,
+          
         };
     },
     mounted() {
@@ -122,6 +130,7 @@ methods: {
                 .get("/qrpages/index")
                 .then(({ data }) => {
                     this.responseAxios = data;
+                    //   console.log( data, 'load url');
                 })
                 .catch(error => {
                     console.log(error);
@@ -138,10 +147,13 @@ methods: {
                 .then(response => {
                     response;
                     this.responseStatus = response.status;
-                    console.log(this.responseStatus, "actualizar");
                     this.loadUrl();
                     this.checkForm(redirectionUrl);
-             console.log(this.$refs['generatedUrl'].value);
+
+                    // this.paramToQueryString = generatedUrl;
+                    // console.log(this.paramToQueryString);
+                    // console.log(this.link);
+                    //error en consola cuando paso paramToQueryString en link, dice que no esta definido
                 })
                 .catch(error => {
                     console.log(error);
@@ -211,12 +223,15 @@ methods: {
             }
         },
         displayQrCode() {
-             let generatedUrl = document.getElementById('generatedUrl')
-                    // console.log(qrInput.value);
-                            // text: this.$refs.generatedUrl.value,
-
-             let options = {
-        text: 'qrInput.value',
+        let generatedUrl = document.querySelectorAll('.generatedUrl')
+            //  let generatedUrl = document.getElementById('generatedUrl')
+// url nueva con query string, la nueva vista va reconocer el dato pq viene del controlador, luego uso axios y el dato se lo mando al api 
+//  a href="localhost/qrpages?var= generatedUrl" 
+//  axios->get->su propia url
+    let options = {
+        // text: generatedUrl.value,
+        // text: this.$refs.generatedUrl.value,
+        text:'qrGenerator?generatedUrl=',
         width: 100,
         height:100,
         colorDark: "#000",
@@ -224,7 +239,8 @@ methods: {
         correctLevel: QRCode.CorrectLevel.H,
         dotScale: 1, 
       };
-   new QRCode(this.$refs.qrcode, options)
+    //   let myImg = document.getElementById('myImg');
+    new QRCode(this.$refs.qrcode, options)
         }
     }
 };
