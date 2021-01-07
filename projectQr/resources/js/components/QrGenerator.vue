@@ -22,10 +22,10 @@ data() {
 //   this.getParam();
 // },
 
-created () {
+updated () {
       this.getParam();
    this.handleResponse()
-// se renderiza en dom, pero da objeto vacio, chino hdp
+//    [__ob__: Observer] y ada en el dom
 },
 methods: {
     getParam() {

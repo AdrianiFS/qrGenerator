@@ -2300,9 +2300,9 @@ __webpack_require__.r(__webpack_exports__);
   // mounted () {
   //   this.getParam();
   // },
-  created: function created() {
+  updated: function updated() {
     this.getParam();
-    this.handleResponse(); // se renderiza en dom, pero da objeto vacio, chino hdp
+    this.handleResponse(); //    [__ob__: Observer] y ada en el dom
   },
   methods: {
     getParam: function getParam() {
