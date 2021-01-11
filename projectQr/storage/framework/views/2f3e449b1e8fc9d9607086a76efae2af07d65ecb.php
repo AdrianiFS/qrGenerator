@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- CSRF Token -->
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
-    <title><?php echo e(config('app.name', 'Laravel')); ?></title>
+    <!-- <title><?php echo e(config('app.name', 'Qr Solutions')); ?></title> -->
+    <title>QR CONCEPTS</title>
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
@@ -21,8 +22,8 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="<?php echo e(url('/')); ?>">
-                    <?php echo e(config('app.name', 'Laravel')); ?>
-
+                    QR CONCEPTS
+                    <!-- <?php echo e(config('app.name', 'Qr Solutions')); ?> -->
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="<?php echo e(__('Toggle navigation')); ?>">
                     <span class="navbar-toggler-icon"></span>
@@ -83,7 +84,8 @@
     <script src="<?php echo e(asset('js/vendor/easy.qrcode.min.js')); ?>" type="text/javascript" charset="utf-8"></script>
     <script src="https://kit.fontawesome.com/8ef165f656.js" crossorigin="anonymous"></script>
 
-
+    <script src="https://unpkg.com/vue-html-to-paper/build/vue-html-to-paper.js
+"></script>
 </body>
 
 </html><?php /**PATH /Users/Adrian/Desktop/qrApp/projectQr/resources/views/layouts/app.blade.php ENDPATH**/ ?>

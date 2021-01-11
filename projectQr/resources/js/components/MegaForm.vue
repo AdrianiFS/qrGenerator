@@ -1,55 +1,71 @@
 <template>
     <div class="upAndDelFormContainer">
-        <h2>Create URL</h2>
-        <form>
+       <div class="formTitle">
+            <h2>Create URL</h2>
+            </div>
+        <form class="forms">
             <div class="formInner createFormContainer">
+                <div class="inputContainer" >
                 <input
                     type="text"
-                    class=" qrInput generatedUrl"
-                    placeholder="generatedUrl"
+                    class=" qrInput generatedUrl qrInputCreate"
+                    placeholder="Reference"
                     v-model="generatedUrlCreate"
                     ref="generatedUrlCreate"
+                    v-focus
                 />
-                <input
+                      <i class="far fa-times-circle resetIcon" @click.prevent="resetForm1()"></i>       
+            </div>
+              
+              <div class="inputContainer">
+                    <input
                     type="text"
-                    class="qrInput redirectionUrl"
-                    placeholder="redirectionUrl"
+                    class="qrInput redirectionUrl qrInputCreate"
+                    placeholder="URL"
                     v-model="redirectionUrlCreate"
                     ref="redirectionUrlCreate"
                 />
+                        <i class="far fa-times-circle resetIcon" @click.prevent="resetForm2()"></i>
+              </div>
                 <button
-                    class="qrBtn"
+                    class="qrBtn saveBtn"
                     type="submit"
                     @click.prevent="createResource()"
                 >
-                    Save
+                   <i class="fa fa-plus Iprint"></i>
                 </button>
-                <button class="" @click.prevent="resetForm">
-                    Reset
-                </button>
+    
             </div>
         </form>
-        <h2>Update or delete URL</h2>
-
+        <div class="formTitle formTitleUpAndDel">
+ <h2 id="form2Title ">Update or delete URL</h2>
+        </div>
+       
         <!-- ******************** -->
-          <div ref="qrcode"></div>
-        <form>
+         
+        <form class="forms">
+              <!-- <label for="searchInput">Search:</label>
+        <input v-model="searchInput" type="text"/> -->
+
             <div
                 class="formInner updateFormInner"
                 v-for="(url, index) in responseAxios"
                 :key="index"
+                :class="{everyOtherColor: index % 2 == 0}"
             >
-            <!-- enviar datos a nueva pag. con info de qr a renderizar -->
-            <!-- pag tiene q una referencia del qr -->
-              <!-- <div ref="qrcode"></div> -->
-                <!-- <button  class="printIcon"> -->
-                  <a :href="link" target="_blank" ref="qrLink" id="qrLink" >
-                  <i class="fas fa-print"></i>
+  
+               <div  v-for="(error) in errors" :key="error" class="FormValidationContainer">
+                <p v-if="errors.length">
+                    <b>Please correct the following error(s):</b>
+                    <ul>
+                        <li >{{ error }}</li>
+                    </ul>
+                </p>
+                <p >{{status200}}</p>
+            </div> 
+               <a :href="link + url.generatedUrl"  target="_blank" id="qrLink">
+                  <i class="fas fa-print Iprint" ></i>
                   </a>
-
-              <!-- {{url.generatedUrl}} -->
-                <!-- </button> -->
-            <!-- :value="url.generatedUrl"  -->
                 <input
                     id="generatedUrl"
                     type="text"
@@ -70,36 +86,24 @@
                     type="submit"
                     @click.prevent="updateResource($refs, index)"
                 >
-                    <i class="fa fa-save"></i>
+                    <i class="fa fa-save Isave"></i>
                 </button>
                 <button
                     class="trashBin"
-                     @click="deleteChanges(url.id)"
+                    @click="deleteChanges(url.id)"
                     @click.prevent="deleteResource($refs, index)"
                 >
-                    <i class="fa fa-trash "></i>
+                    <i class="fa fa-trash ItrashBin"></i>
                 </button>
-                  <div class="FormValidationContainer">
-                <p v-if="errors.length">
-                    <b>Please correct the following error(s):</b>
-                    <ul>
-                        <li  v-for="error in errors" :key="error">{{ error }} </li>
-                    </ul>
-                </p>
-                <p >{{status200}}</p>
-            </div> 
+
+               
             </div>
         </form>
     </div>
 </template>
 <script>
-
-// vista laravel, tiene un comp vuejs con prop contiene input data
-
 import * as QRCode from 'easyqrcodejs'  
- let generatedUrl = document.querySelectorAll('.generatedUrl')
 export default {
-
     data() {
         return {
             responseAxios: [],
@@ -115,30 +119,47 @@ export default {
             msgOne: "",
             status200: "",
             errors: [],
-            paramToQueryString:'',
-            link:`qrGenerator?generatedUrl=${generatedUrl.value}`,
-          
+            // link:'http://f22918c0d2fa.ngrok.io/qrpages/qrGenerator?generatedUrl='
+            link:'http://127.0.0.1:8000/qrpages/qrGenerator?generatedUrl=',
+            searchInput:''
+           
         };
     },
+      directives: {
+    focus: {
+      inserted: function (el) {
+        el.focus();
+      },
+    },
+  },
     mounted() {
         this.loadUrl();
-        this.displayQrCode()
+    }, 
+    computed: {
+         filteredUrl: function () {
+     this.responseAxios.filter((url) => {
+        return url.generatedUrl.match(this.searchInput);
+    //  console.log(this.responseAxios.forEach(el=>console.log(el.generatedUrl)));
+
+      });
     },
+      },
 methods: {
         loadUrl() {
             axios
                 .get("/qrpages/index")
                 .then(({ data }) => {
                     this.responseAxios = data;
-                    //   console.log( data, 'load url');
                 })
                 .catch(error => {
                     console.log(error);
                 });
         },
-        updateResource(refs, index) {
-            const generatedUrl = refs.generatedUrl[index].value;
-            const redirectionUrl = refs.redirectionUrl[index].value;        
+        updateResource(refs, id) {
+            const generatedUrl = refs.generatedUrl[id].value;
+            const redirectionUrl = refs.redirectionUrl[id].value;   
+            // let formPosition= this.$refs.formPosition.indexOf(this.$refs.formPosition[id]);
+             this.link += refs.generatedUrl[id].value
             axios
                 .post("/qrpages/updateResource", {
                     generatedUrl: generatedUrl,
@@ -149,11 +170,6 @@ methods: {
                     this.responseStatus = response.status;
                     this.loadUrl();
                     this.checkForm(redirectionUrl);
-
-                    // this.paramToQueryString = generatedUrl;
-                    // console.log(this.paramToQueryString);
-                    // console.log(this.link);
-                    //error en consola cuando paso paramToQueryString en link, dice que no esta definido
                 })
                 .catch(error => {
                     console.log(error);
@@ -173,8 +189,10 @@ methods: {
                     console.log(error);
                 });
         },
-        resetForm() {
+        resetForm1() {
             this.$refs["generatedUrlCreate"].value = "";
+        },
+          resetForm2() {
             this.$refs["redirectionUrlCreate"].value = "";
         },
         createResource() {
@@ -208,47 +226,33 @@ methods: {
         },
         checkForm(refs) {
             this.errors = [];
+            // console.log(refs, index, 'check form');
+            // let formPosition= this.$refs.formPosition.indexOf(this.$refs.formPosition[id]);
+            // console.log(this.$refs.formPosition.indexOf(this.$refs.formPosition[index]) );
             if (this.responseStatus === 200) {
-                this.status200 = "Sent properly to DataBase";
+                // this.status200 = "Sent properly to DataBase";
+                // alert( "Sent properly to DataBase");
             }
             if (this.responseStatus >= 300) {
-                this.errors.push("Not sent properly to DataBase");
+                // this.errors.push("Not sent properly to DataBase");
+                alert("Not sent properly to DataBase")
             }
             if (!refs) {
-                this.errors.push("RedirectionUrl required");
-                 this.errors.forEach(e => console.log(e, 'foreach'));
+             this.errors.push("RedirectionUrl required");
+          
+                //  this.errors.forEach(e => console.log(e, 'foreach'));
             }
             if (!this.errors.length) {
                 return true;
             }
-        },
-        displayQrCode() {
-        let generatedUrl = document.querySelectorAll('.generatedUrl')
-            //  let generatedUrl = document.getElementById('generatedUrl')
-// url nueva con query string, la nueva vista va reconocer el dato pq viene del controlador, luego uso axios y el dato se lo mando al api 
-//  a href="localhost/qrpages?var= generatedUrl" 
-//  axios->get->su propia url
-    let options = {
-        // text: generatedUrl.value,
-        // text: this.$refs.generatedUrl.value,
-        text:'qrGenerator?generatedUrl=',
-        width: 100,
-        height:100,
-        colorDark: "#000",
-        colorLight: "#fff",
-        correctLevel: QRCode.CorrectLevel.H,
-        dotScale: 1, 
-      };
-    //   let myImg = document.getElementById('myImg');
-    new QRCode(this.$refs.qrcode, options)
-        }
+        },    
     }
 };
 </script>
 <style>
 .updateFormInner {
-    width: 90% !important;
-    margin: 50px auto;
+    width: 100% !important;
+    margin: 0 auto;
 }
 .upAndDelFormContainer {
     width: 92%;
@@ -258,15 +262,49 @@ methods: {
 .saveBtn,
 .printIcon {
     width: 30px !important;
+    background: none;
+    /* border: none !important; */
 }
-/* .FormValidationContainer{
-} */
+
+.Iprint{
+/* color: rgb(6, 86, 172); */
+ color: #435d7d;
+}
+.Isave{
+color: rgb(255, 202, 40);
+}
+.ItrashBin{
+color: rgb(241, 89, 156);
+}
 .displayMessage {
     display: none;
 }
 #myImg{
-    /* display: none; */
     width: 50px;
     height: 50px;
     }
+    .inputContainer{
+        position: relative;
+        width: 30%;
+    }
+   .qrInput{
+       position: relative;
+   }
+.resetIcon{
+    position: absolute;
+    right: 5%;
+    top: 30% !important;
+    color: gray;
+    
+}
+
+
+
+
+.qrInputCreate{
+    width: 100% !important;
+}
+.everyOtherColor{
+background-color: rgb(251, 251, 251);
+}
 </style>

@@ -4,7 +4,7 @@
     <div class="qrContainer">
         <!-- <div id="qrcode"></div> -->
         <div class="qrContainer--header">
-            <h1>QR generator</h1>
+            <!-- <h1>QR generator</h1> -->
         </div>
         <!-- vueJscomponent -->
         <!-- <create-form></create-form> -->

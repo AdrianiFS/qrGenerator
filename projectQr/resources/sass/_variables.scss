@@ -17,13 +17,12 @@ $yellow: #ffed4a;
 $green: #38c172;
 $teal: #4dc0b5;
 $cyan: #6cb2eb;
+$white: #ffffff;
+
 @mixin btn-input {
     position: relative;
     overflow: visible;
     border-radius: 5px;
-    // margin-bottom: 10px;
-    // margin-right: 10px;
     height: 35px;
     outline: none;
-    border: none;
 }

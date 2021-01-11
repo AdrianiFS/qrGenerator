@@ -11,27 +11,33 @@ img {
     max-height: 252px;
     margin-bottom: 35px;
 }
+.forms {
+    background-color: $white;
+    -webkit-box-shadow: 12px 12px 20px 1px rgba($color: #000000, $alpha: 0.1);
+    box-shadow: 12px 12px 20px 1px rgba($color: #000000, $alpha: 0.1);
+}
 .formInner {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    // flex-wrap: wrap;
     width: 100%;
     height: 90px;
-    margin-top: 25px;
-    -webkit-box-shadow: 12px 12px 20px 1px rgba(0, 0, 0, 0.1);
-    box-shadow: 12px 12px 20px 1px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    // margin-top: 25px;
+    /* box-shadow: 12px 12px 20px 1px rgba(0, 0, 0, 0.1); */
+    /* border-radius: 10px; */
+    border-bottom: 1px solid rgba($color: #000000, $alpha: 0.1);
 }
 
 .formInner {
     & input {
         width: 30%;
         @include btn-input;
+        border: 0.1px solid rgba($color: #000000, $alpha: 0.1);
     }
     & button {
         width: 15%;
         @include btn-input;
+        border: none;
     }
 }
 
@@ -47,4 +53,21 @@ img {
 }
 .upAndDelFormContainer {
     margin-top: 50px;
+}
+#form2Title {
+    margin-top: 50px;
+}
+.formTitle {
+    width: 100%;
+    // background-color: rgb(24, 69, 118);
+    background-color: #435d7d;
+    margin-bottom: 0;
+    padding: 5px;
+}
+.formTitleUpAndDel {
+    margin-top: 50px;
+}
+.formTitle h2 {
+    color: #ffffff;
+    margin: 5px 5px 5px;
 }

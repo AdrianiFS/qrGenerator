@@ -2118,9 +2118,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-// vista laravel, tiene un comp vuejs con prop contiene input data
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
-var generatedUrl = document.querySelectorAll('.generatedUrl');
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2137,44 +2144,58 @@ var generatedUrl = document.querySelectorAll('.generatedUrl');
       msgOne: "",
       status200: "",
       errors: [],
-      paramToQueryString: '',
-      link: "qrGenerator?generatedUrl=".concat(generatedUrl.value)
+      // link:'http://f22918c0d2fa.ngrok.io/qrpages/qrGenerator?generatedUrl='
+      link: 'http://127.0.0.1:8000/qrpages/qrGenerator?generatedUrl=',
+      searchInput: ''
     };
+  },
+  directives: {
+    focus: {
+      inserted: function inserted(el) {
+        el.focus();
+      }
+    }
   },
   mounted: function mounted() {
     this.loadUrl();
-    this.displayQrCode();
+  },
+  computed: {
+    filteredUrl: function filteredUrl() {
+      var _this = this;
+
+      this.responseAxios.filter(function (url) {
+        return url.generatedUrl.match(_this.searchInput); //  console.log(this.responseAxios.forEach(el=>console.log(el.generatedUrl)));
+      });
+    }
   },
   methods: {
     loadUrl: function loadUrl() {
-      var _this = this;
+      var _this2 = this;
 
       axios.get("/qrpages/index").then(function (_ref) {
         var data = _ref.data;
-        _this.responseAxios = data; //   console.log( data, 'load url');
+        _this2.responseAxios = data;
       })["catch"](function (error) {
         console.log(error);
       });
     },
-    updateResource: function updateResource(refs, index) {
-      var _this2 = this;
+    updateResource: function updateResource(refs, id) {
+      var _this3 = this;
 
-      var generatedUrl = refs.generatedUrl[index].value;
-      var redirectionUrl = refs.redirectionUrl[index].value;
+      var generatedUrl = refs.generatedUrl[id].value;
+      var redirectionUrl = refs.redirectionUrl[id].value; // let formPosition= this.$refs.formPosition.indexOf(this.$refs.formPosition[id]);
+
+      this.link += refs.generatedUrl[id].value;
       axios.post("/qrpages/updateResource", {
         generatedUrl: generatedUrl,
         redirectionUrl: redirectionUrl
       }).then(function (response) {
         response;
-        _this2.responseStatus = response.status;
+        _this3.responseStatus = response.status;
 
-        _this2.loadUrl();
+        _this3.loadUrl();
 
-        _this2.checkForm(redirectionUrl); // this.paramToQueryString = generatedUrl;
-        // console.log(this.paramToQueryString);
-        // console.log(this.link);
-        //error en consola cuando paso paramToQueryString en link, dice que no esta definido
-
+        _this3.checkForm(redirectionUrl);
       })["catch"](function (error) {
         console.log(error);
       });
@@ -2189,23 +2210,25 @@ var generatedUrl = document.querySelectorAll('.generatedUrl');
         console.log(error);
       });
     },
-    resetForm: function resetForm() {
+    resetForm1: function resetForm1() {
       this.$refs["generatedUrlCreate"].value = "";
+    },
+    resetForm2: function resetForm2() {
       this.$refs["redirectionUrlCreate"].value = "";
     },
     createResource: function createResource() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.post("/qrpages/store", {
         generatedUrl: this.generatedUrlCreate,
         redirectionUrl: this.redirectionUrlCreate
       }).then(function (response) {
         response.data;
-        _this3.urlData = response;
+        _this4.urlData = response;
 
-        _this3.loadUrl();
+        _this4.loadUrl();
 
-        _this3.updateChangesWhenCreate();
+        _this4.updateChangesWhenCreate();
       })["catch"](function (error) {
         console.log(error.response);
       });
@@ -2221,46 +2244,28 @@ var generatedUrl = document.querySelectorAll('.generatedUrl');
       });
     },
     checkForm: function checkForm(refs) {
-      this.errors = [];
+      this.errors = []; // console.log(refs, index, 'check form');
+      // let formPosition= this.$refs.formPosition.indexOf(this.$refs.formPosition[id]);
+      // console.log(this.$refs.formPosition.indexOf(this.$refs.formPosition[index]) );
 
-      if (this.responseStatus === 200) {
-        this.status200 = "Sent properly to DataBase";
+      if (this.responseStatus === 200) {// this.status200 = "Sent properly to DataBase";
+        // alert( "Sent properly to DataBase");
       }
 
       if (this.responseStatus >= 300) {
-        this.errors.push("Not sent properly to DataBase");
+        // this.errors.push("Not sent properly to DataBase");
+        alert("Not sent properly to DataBase");
       }
 
       if (!refs) {
         this.errors.push("RedirectionUrl required");
-        this.errors.forEach(function (e) {
-          return console.log(e, 'foreach');
-        });
+        console.log(this.errors); //  this.errors.forEach(e => console.log(e, 'foreach'));
+        // alert("RedirectionUrl required");
       }
 
       if (!this.errors.length) {
         return true;
       }
-    },
-    displayQrCode: function displayQrCode() {
-      var generatedUrl = document.querySelectorAll('.generatedUrl'); //  let generatedUrl = document.getElementById('generatedUrl')
-      // url nueva con query string, la nueva vista va reconocer el dato pq viene del controlador, luego uso axios y el dato se lo mando al api 
-      //  a href="localhost/qrpages?var= generatedUrl" 
-      //  axios->get->su propia url
-
-      var options = {
-        // text: generatedUrl.value,
-        // text: this.$refs.generatedUrl.value,
-        text: 'qrGenerator?generatedUrl=',
-        width: 100,
-        height: 100,
-        colorDark: "#000",
-        colorLight: "#fff",
-        correctLevel: easyqrcodejs__WEBPACK_IMPORTED_MODULE_0__["CorrectLevel"].H,
-        dotScale: 1
-      }; //   let myImg = document.getElementById('myImg');
-
-      new easyqrcodejs__WEBPACK_IMPORTED_MODULE_0__(this.$refs.qrcode, options);
     }
   }
 });
@@ -2288,34 +2293,61 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+ // import Vue from 'vue';
+// import VueHtmlToPaper from 'vue-html-to-paper';
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       test: 'hola',
       responseAxios: [],
-      urlResponse: []
+      urlResponse: [],
+      output: null
     };
   },
-  // mounted () {
-  //   this.getParam();
-  // },
-  updated: function updated() {
+  mounted: function mounted() {
     this.getParam();
-    this.handleResponse(); //    [__ob__: Observer] y ada en el dom
+    this.displayQr();
   },
   methods: {
     getParam: function getParam() {
       var _this = this;
 
-      axios.get("qrGenerator?generatedUrl=undefined").then(function (response) {
-        _this.responseAxios = response; //    console.log(response.data.data);
+      axios.get("/qrpages/qrGeneratorData").then(function (response) {
+        _this.responseAxios = response; //    console.log(response);
       })["catch"](function (error) {
         console.log(error);
       });
     },
     handleResponse: function handleResponse() {
-      console.log(this.responseAxios, 'handleResponse');
+      // console.log(this.responseAxios.data,'handleResponse');
+      // console.log(window.location.href);
+      var url = window.location.href;
+      var finalUrl = url.replace(/qrGenerator/, 'queryString');
+    },
+    displayQr: function displayQr() {
+      var url = window.location.href;
+      var finalUrl = url.replace(/qrGenerator/, 'queryString');
+      console.log(finalUrl);
+      console.log(url);
+      var options = {
+        text: finalUrl,
+        // text:'https://www.qrprosolutions',
+        width: 300,
+        height: 300,
+        colorDark: "#000",
+        colorLight: "#fff",
+        correctLevel: easyqrcodejs__WEBPACK_IMPORTED_MODULE_0__["CorrectLevel"].H,
+        dotScale: 1
+      };
+      new easyqrcodejs__WEBPACK_IMPORTED_MODULE_0__(this.$refs.qrcode, options);
+    },
+    print: function print() {
+      //   this.$refs.printButton.style.display='none';
+      window.print(); //   vue-html-to-paper
+      //  this.$htmlToPaper('qrCodePrint');
     }
   }
 });
@@ -6868,7 +6900,26 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.updateFormInner {\n    width: 90% !important;\n    margin: 50px auto;\n}\n.upAndDelFormContainer {\n    width: 92%;\n    margin: 50px auto;\n}\n.trashBin,\n.saveBtn,\n.printIcon {\n    width: 30px !important;\n}\n/* .FormValidationContainer{\n} */\n.displayMessage {\n    display: none;\n}\n#myImg{\n    /* display: none; */\n    width: 50px;\n    height: 50px;\n}\n", ""]);
+exports.push([module.i, "\n.updateFormInner {\n    width: 100% !important;\n    margin: 0 auto;\n}\n.upAndDelFormContainer {\n    width: 92%;\n    margin: 50px auto;\n}\n.trashBin,\n.saveBtn,\n.printIcon {\n    width: 30px !important;\n    background: none;\n    /* border: none !important; */\n}\n.Iprint{\n/* color: rgb(6, 86, 172); */\n color: #435d7d;\n}\n.Isave{\ncolor: rgb(255, 202, 40);\n}\n.ItrashBin{\ncolor: rgb(241, 89, 156);\n}\n.displayMessage {\n    display: none;\n}\n#myImg{\n    width: 50px;\n    height: 50px;\n}\n.inputContainer{\n        position: relative;\n        width: 30%;\n}\n.qrInput{\n       position: relative;\n}\n.resetIcon{\n    position: absolute;\n    right: 5%;\n    top: 30% !important;\n    color: gray;\n}\n.qrInputCreate{\n    width: 100% !important;\n}\n.everyOtherColor{\nbackground-color: rgb(251, 251, 251);\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/QrGenerator.vue?vue&type=style&index=0&id=5a4a58d2&scoped=true&lang=css&":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/QrGenerator.vue?vue&type=style&index=0&id=5a4a58d2&scoped=true&lang=css& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n#qrcode[data-v-5a4a58d2]{\n    width: 300px;\n    margin: 70px auto;\n}\nh1[data-v-5a4a58d2]{\n    text-align: center;\n}\n.iPrintQrComp[data-v-5a4a58d2]{\n    position: absolute;\n    top: 15%;\n    right: 1%;\n}\n\n/* .navbar {\n    display: none !important;\n} */\n", ""]);
 
 // exports
 
@@ -38116,6 +38167,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/QrGenerator.vue?vue&type=style&index=0&id=5a4a58d2&scoped=true&lang=css&":
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/QrGenerator.vue?vue&type=style&index=0&id=5a4a58d2&scoped=true&lang=css& ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./QrGenerator.vue?vue&type=style&index=0&id=5a4a58d2&scoped=true&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/QrGenerator.vue?vue&type=style&index=0&id=5a4a58d2&scoped=true&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UpdateAndDeleteForm.vue?vue&type=style&index=0&lang=css&":
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UpdateAndDeleteForm.vue?vue&type=style&index=0&lang=css& ***!
@@ -38901,60 +38982,85 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "upAndDelFormContainer" }, [
-    _c("h2", [_vm._v("Create URL")]),
+    _vm._m(0),
     _vm._v(" "),
-    _c("form", [
+    _c("form", { staticClass: "forms" }, [
       _c("div", { staticClass: "formInner createFormContainer" }, [
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.generatedUrlCreate,
-              expression: "generatedUrlCreate"
-            }
-          ],
-          ref: "generatedUrlCreate",
-          staticClass: " qrInput generatedUrl",
-          attrs: { type: "text", placeholder: "generatedUrl" },
-          domProps: { value: _vm.generatedUrlCreate },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+        _c("div", { staticClass: "inputContainer" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.generatedUrlCreate,
+                expression: "generatedUrlCreate"
+              },
+              { name: "focus", rawName: "v-focus" }
+            ],
+            ref: "generatedUrlCreate",
+            staticClass: " qrInput generatedUrl qrInputCreate",
+            attrs: { type: "text", placeholder: "Reference" },
+            domProps: { value: _vm.generatedUrlCreate },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.generatedUrlCreate = $event.target.value
               }
-              _vm.generatedUrlCreate = $event.target.value
             }
-          }
-        }),
+          }),
+          _vm._v(" "),
+          _c("i", {
+            staticClass: "far fa-times-circle resetIcon",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                return _vm.resetForm1()
+              }
+            }
+          })
+        ]),
         _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.redirectionUrlCreate,
-              expression: "redirectionUrlCreate"
-            }
-          ],
-          ref: "redirectionUrlCreate",
-          staticClass: "qrInput redirectionUrl",
-          attrs: { type: "text", placeholder: "redirectionUrl" },
-          domProps: { value: _vm.redirectionUrlCreate },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+        _c("div", { staticClass: "inputContainer" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.redirectionUrlCreate,
+                expression: "redirectionUrlCreate"
               }
-              _vm.redirectionUrlCreate = $event.target.value
+            ],
+            ref: "redirectionUrlCreate",
+            staticClass: "qrInput redirectionUrl qrInputCreate",
+            attrs: { type: "text", placeholder: "URL" },
+            domProps: { value: _vm.redirectionUrlCreate },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.redirectionUrlCreate = $event.target.value
+              }
             }
-          }
-        }),
+          }),
+          _vm._v(" "),
+          _c("i", {
+            staticClass: "far fa-times-circle resetIcon",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                return _vm.resetForm2()
+              }
+            }
+          })
+        ]),
         _vm._v(" "),
         _c(
           "button",
           {
-            staticClass: "qrBtn",
+            staticClass: "qrBtn saveBtn",
             attrs: { type: "submit" },
             on: {
               click: function($event) {
@@ -38963,43 +39069,55 @@ var render = function() {
               }
             }
           },
-          [_vm._v("\n                Save\n            ")]
-        ),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            on: {
-              click: function($event) {
-                $event.preventDefault()
-                return _vm.resetForm($event)
-              }
-            }
-          },
-          [_vm._v("\n                Reset\n            ")]
+          [_c("i", { staticClass: "fa fa-plus Iprint" })]
         )
       ])
     ]),
     _vm._v(" "),
-    _c("h2", [_vm._v("Update or delete URL")]),
-    _vm._v(" "),
-    _c("div", { ref: "qrcode" }),
+    _vm._m(1),
     _vm._v(" "),
     _c(
       "form",
+      { staticClass: "forms" },
       _vm._l(_vm.responseAxios, function(url, index) {
         return _c(
           "div",
-          { key: index, staticClass: "formInner updateFormInner" },
+          {
+            key: index,
+            staticClass: "formInner updateFormInner",
+            class: { everyOtherColor: index % 2 == 0 }
+          },
           [
+            _vm._l(_vm.errors, function(error) {
+              return _c(
+                "div",
+                { key: error, staticClass: "FormValidationContainer" },
+                [
+                  _vm.errors.length
+                    ? _c("p", [
+                        _c("b", [
+                          _vm._v("Please correct the following error(s):")
+                        ]),
+                        _vm._v(" "),
+                        _c("ul", [_c("li", [_vm._v(_vm._s(error))])])
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c("p", [_vm._v(_vm._s(_vm.status200))])
+                ]
+              )
+            }),
+            _vm._v(" "),
             _c(
               "a",
               {
-                ref: "qrLink",
-                refInFor: true,
-                attrs: { href: _vm.link, target: "_blank", id: "qrLink" }
+                attrs: {
+                  href: _vm.link + url.generatedUrl,
+                  target: "_blank",
+                  id: "qrLink"
+                }
               },
-              [_c("i", { staticClass: "fas fa-print" })]
+              [_c("i", { staticClass: "fas fa-print Iprint" })]
             ),
             _vm._v(" "),
             _c("input", {
@@ -39030,7 +39148,7 @@ var render = function() {
                   }
                 }
               },
-              [_c("i", { staticClass: "fa fa-save" })]
+              [_c("i", { staticClass: "fa fa-save Isave" })]
             ),
             _vm._v(" "),
             _c(
@@ -39049,46 +39167,46 @@ var render = function() {
                   ]
                 }
               },
-              [_c("i", { staticClass: "fa fa-trash " })]
-            ),
-            _vm._v(" "),
-            _c("div", { staticClass: "FormValidationContainer" }, [
-              _vm.errors.length
-                ? _c("p", [
-                    _c("b", [_vm._v("Please correct the following error(s):")]),
-                    _vm._v(" "),
-                    _c(
-                      "ul",
-                      _vm._l(_vm.errors, function(error) {
-                        return _c("li", { key: error }, [
-                          _vm._v(_vm._s(error) + " ")
-                        ])
-                      }),
-                      0
-                    )
-                  ])
-                : _vm._e(),
-              _vm._v(" "),
-              _c("p", [_vm._v(_vm._s(_vm.status200))])
-            ])
-          ]
+              [_c("i", { staticClass: "fa fa-trash ItrashBin" })]
+            )
+          ],
+          2
         )
       }),
       0
     )
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "formTitle" }, [
+      _c("h2", [_vm._v("Create URL")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "formTitle formTitleUpAndDel" }, [
+      _c("h2", { attrs: { id: "form2Title " } }, [
+        _vm._v("Update or delete URL")
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/QrGenerator.vue?vue&type=template&id=5a4a58d2&":
-/*!**************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/QrGenerator.vue?vue&type=template&id=5a4a58d2& ***!
-  \**************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/QrGenerator.vue?vue&type=template&id=5a4a58d2&scoped=true&":
+/*!**************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/QrGenerator.vue?vue&type=template&id=5a4a58d2&scoped=true& ***!
+  \**************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -39100,32 +39218,21 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "main" },
-    [
-      _c("div", { ref: "qrcode" }),
-      _vm._v(" "),
-      _c("h1", [_vm._v("qr-generator Component")]),
-      _vm._v(" "),
-      _vm._l(_vm.responseAxios, function(url) {
-        return _c("div", { key: url.id }, [_c("p", [_vm._v(_vm._s(url.url))])])
-      }),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          on: {
-            click: function($event) {
-              return _vm.handleResponse()
-            }
-          }
-        },
-        [_vm._v("click")]
-      )
-    ],
-    2
-  )
+  return _c("div", { staticClass: "main" }, [
+    _c(
+      "button",
+      {
+        ref: "printButton",
+        staticClass: "iPrintQrComp",
+        on: { click: _vm.print }
+      },
+      [_c("i", { staticClass: "fas fa-print Iprint " })]
+    ),
+    _vm._v(" "),
+    _c("div", { attrs: { id: "qrCodePrint" } }, [
+      _c("div", { ref: "qrcode", attrs: { id: "qrcode" } })
+    ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -51416,7 +51523,8 @@ Vue.component("example-component", __webpack_require__(/*! ./components/ExampleC
 Vue.component('create-form', __webpack_require__(/*! ./components/CreateForm.vue */ "./resources/js/components/CreateForm.vue")["default"]);
 Vue.component('update-delete', __webpack_require__(/*! ./components/UpdateAndDeleteForm.vue */ "./resources/js/components/UpdateAndDeleteForm.vue")["default"]);
 Vue.component('mega-form', __webpack_require__(/*! ./components/MegaForm.vue */ "./resources/js/components/MegaForm.vue")["default"]);
-Vue.component('qr-generator', __webpack_require__(/*! ./components/QrGenerator.vue */ "./resources/js/components/QrGenerator.vue")["default"]);
+Vue.component('qr-generator', __webpack_require__(/*! ./components/QrGenerator.vue */ "./resources/js/components/QrGenerator.vue")["default"]); // Vue.use(VueHtmlToPaper);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -51732,9 +51840,11 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _QrGenerator_vue_vue_type_template_id_5a4a58d2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./QrGenerator.vue?vue&type=template&id=5a4a58d2& */ "./resources/js/components/QrGenerator.vue?vue&type=template&id=5a4a58d2&");
+/* harmony import */ var _QrGenerator_vue_vue_type_template_id_5a4a58d2_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./QrGenerator.vue?vue&type=template&id=5a4a58d2&scoped=true& */ "./resources/js/components/QrGenerator.vue?vue&type=template&id=5a4a58d2&scoped=true&");
 /* harmony import */ var _QrGenerator_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./QrGenerator.vue?vue&type=script&lang=js& */ "./resources/js/components/QrGenerator.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _QrGenerator_vue_vue_type_style_index_0_id_5a4a58d2_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./QrGenerator.vue?vue&type=style&index=0&id=5a4a58d2&scoped=true&lang=css& */ "./resources/js/components/QrGenerator.vue?vue&type=style&index=0&id=5a4a58d2&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -51742,13 +51852,13 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _QrGenerator_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _QrGenerator_vue_vue_type_template_id_5a4a58d2___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _QrGenerator_vue_vue_type_template_id_5a4a58d2___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _QrGenerator_vue_vue_type_template_id_5a4a58d2_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _QrGenerator_vue_vue_type_template_id_5a4a58d2_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
-  null,
+  "5a4a58d2",
   null
   
 )
@@ -51774,19 +51884,35 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/QrGenerator.vue?vue&type=template&id=5a4a58d2&":
-/*!********************************************************************************!*\
-  !*** ./resources/js/components/QrGenerator.vue?vue&type=template&id=5a4a58d2& ***!
-  \********************************************************************************/
+/***/ "./resources/js/components/QrGenerator.vue?vue&type=style&index=0&id=5a4a58d2&scoped=true&lang=css&":
+/*!**********************************************************************************************************!*\
+  !*** ./resources/js/components/QrGenerator.vue?vue&type=style&index=0&id=5a4a58d2&scoped=true&lang=css& ***!
+  \**********************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_QrGenerator_vue_vue_type_style_index_0_id_5a4a58d2_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./QrGenerator.vue?vue&type=style&index=0&id=5a4a58d2&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/QrGenerator.vue?vue&type=style&index=0&id=5a4a58d2&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_QrGenerator_vue_vue_type_style_index_0_id_5a4a58d2_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_QrGenerator_vue_vue_type_style_index_0_id_5a4a58d2_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_QrGenerator_vue_vue_type_style_index_0_id_5a4a58d2_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_QrGenerator_vue_vue_type_style_index_0_id_5a4a58d2_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+
+
+/***/ }),
+
+/***/ "./resources/js/components/QrGenerator.vue?vue&type=template&id=5a4a58d2&scoped=true&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/QrGenerator.vue?vue&type=template&id=5a4a58d2&scoped=true& ***!
+  \********************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_QrGenerator_vue_vue_type_template_id_5a4a58d2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./QrGenerator.vue?vue&type=template&id=5a4a58d2& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/QrGenerator.vue?vue&type=template&id=5a4a58d2&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_QrGenerator_vue_vue_type_template_id_5a4a58d2___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_QrGenerator_vue_vue_type_template_id_5a4a58d2_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./QrGenerator.vue?vue&type=template&id=5a4a58d2&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/QrGenerator.vue?vue&type=template&id=5a4a58d2&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_QrGenerator_vue_vue_type_template_id_5a4a58d2_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_QrGenerator_vue_vue_type_template_id_5a4a58d2___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_QrGenerator_vue_vue_type_template_id_5a4a58d2_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
