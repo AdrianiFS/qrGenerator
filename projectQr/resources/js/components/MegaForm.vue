@@ -13,6 +13,8 @@
                     v-model="generatedUrlCreate"
                     ref="generatedUrlCreate"
                     v-focus
+                    name="generatedUrlCreate"
+                    required
                 />
                       <i class="far fa-times-circle resetIcon" @click.prevent="resetForm1()"></i>       
             </div>
@@ -24,12 +26,14 @@
                     placeholder="URL"
                     v-model="redirectionUrlCreate"
                     ref="redirectionUrlCreate"
+                    required
                 />
                         <i class="far fa-times-circle resetIcon" @click.prevent="resetForm2()"></i>
               </div>
                 <button
                     class="qrBtn saveBtn"
                     type="submit"
+                    title="Add new URL"
                     @click.prevent="createResource()"
                 >
                    <i class="fa fa-plus Iprint"></i>
@@ -44,8 +48,8 @@
         <!-- ******************** -->
          
         <form class="forms">
-              <!-- <label for="searchInput">Search:</label>
-        <input v-model="searchInput" type="text"/> -->
+              <label for="searchInput">Search:</label>
+        <input v-model="searchInput" type="text"/>
 
             <div
                 class="formInner updateFormInner"
@@ -53,17 +57,18 @@
                 :key="index"
                 :class="{everyOtherColor: index % 2 == 0}"
             >
-  
-               <div  v-for="(error) in errors" :key="error" class="FormValidationContainer">
-                <p v-if="errors.length">
+        
+               <div  v-for="(error, index ) in errors" :key="index.message" class="FormValidationContainer">
+                <!-- <p v-if="errors.length"> -->
+                    <p>
                     <b>Please correct the following error(s):</b>
                     <ul>
-                        <li >{{ error }}</li>
+                        <li >{{ index.message }}</li>
                     </ul>
                 </p>
                 <p >{{status200}}</p>
             </div> 
-               <a :href="link + url.generatedUrl"  target="_blank" id="qrLink">
+               <a :href="link + url.generatedUrl" target="_blank" id="qrLink" title="Print">
                   <i class="fas fa-print Iprint" ></i>
                   </a>
                 <input
@@ -80,16 +85,19 @@
                     :value="url.redirectionUrl"
                     ref="redirectionUrl"
                     id=""
+                    required
                 />
                 <button
                     class="saveBtn"
                     type="submit"
+                    title="Update redirection URL"
                     @click.prevent="updateResource($refs, index)"
                 >
                     <i class="fa fa-save Isave"></i>
                 </button>
                 <button
                     class="trashBin"
+                    title="Delete URLs"
                     @click="deleteChanges(url.id)"
                     @click.prevent="deleteResource($refs, index)"
                 >
@@ -118,7 +126,8 @@ export default {
             responseStatus: "",
             msgOne: "",
             status200: "",
-            errors: [],
+            // errors: [],
+            errors:{message:''},
             // link:'http://f22918c0d2fa.ngrok.io/qrpages/qrGenerator?generatedUrl='
             link:'http://127.0.0.1:8000/qrpages/qrGenerator?generatedUrl=',
             searchInput:''
@@ -140,7 +149,7 @@ export default {
      this.responseAxios.filter((url) => {
         return url.generatedUrl.match(this.searchInput);
     //  console.log(this.responseAxios.forEach(el=>console.log(el.generatedUrl)));
-
+console.log('q pasa');
       });
     },
       },
@@ -159,7 +168,7 @@ methods: {
             const generatedUrl = refs.generatedUrl[id].value;
             const redirectionUrl = refs.redirectionUrl[id].value;   
             // let formPosition= this.$refs.formPosition.indexOf(this.$refs.formPosition[id]);
-             this.link += refs.generatedUrl[id].value
+            //  this.link += refs.generatedUrl[id].value
             axios
                 .post("/qrpages/updateResource", {
                     generatedUrl: generatedUrl,
@@ -190,6 +199,7 @@ methods: {
                 });
         },
         resetForm1() {
+            // el.value=''
             this.$refs["generatedUrlCreate"].value = "";
         },
           resetForm2() {
@@ -208,7 +218,7 @@ methods: {
                     this.updateChangesWhenCreate();
                 })
                 .catch(error => {
-                    console.log(error.response);
+                    console.log(error.response.data,'err');
                 });
         },
         updateChangesWhenCreate() {
@@ -225,7 +235,7 @@ methods: {
             });
         },
         checkForm(refs) {
-            this.errors = [];
+            // this.errors = [];
             // console.log(refs, index, 'check form');
             // let formPosition= this.$refs.formPosition.indexOf(this.$refs.formPosition[id]);
             // console.log(this.$refs.formPosition.indexOf(this.$refs.formPosition[index]) );
@@ -238,15 +248,17 @@ methods: {
                 alert("Not sent properly to DataBase")
             }
             if (!refs) {
-             this.errors.push("RedirectionUrl required");
-          
+            //  this.errors.push("RedirectionUrl required");
+            console.log(this.errors.message);
+          this.errors.message ='RedirectionUrl required';
+
                 //  this.errors.forEach(e => console.log(e, 'foreach'));
             }
             if (!this.errors.length) {
                 return true;
             }
         },    
-    }
+    },
 };
 </script>
 <style>
@@ -265,6 +277,11 @@ methods: {
     background: none;
     /* border: none !important; */
 }
+/* .trashBin:hover::after{
+
+    background: none;
+    content: 'Delete URLs';
+} */
 
 .Iprint{
 /* color: rgb(6, 86, 172); */
@@ -307,4 +324,17 @@ color: rgb(241, 89, 156);
 .everyOtherColor{
 background-color: rgb(251, 251, 251);
 }
+
+/* button{
+  border: none;
+  width: 32px;
+  height: 32px;
+  background-color: red;
+  transition: all ease-in-out 0.1s;
+  cursor: pointer;
+} */
+/* button:hover{ */
+  /* border: 1px solid #888;
+  background-color: #ddd;
+} */
 </style>

@@ -2127,6 +2127,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2143,7 +2151,10 @@ __webpack_require__.r(__webpack_exports__);
       responseStatus: "",
       msgOne: "",
       status200: "",
-      errors: [],
+      // errors: [],
+      errors: {
+        message: ''
+      },
       // link:'http://f22918c0d2fa.ngrok.io/qrpages/qrGenerator?generatedUrl='
       link: 'http://127.0.0.1:8000/qrpages/qrGenerator?generatedUrl=',
       searchInput: ''
@@ -2165,6 +2176,8 @@ __webpack_require__.r(__webpack_exports__);
 
       this.responseAxios.filter(function (url) {
         return url.generatedUrl.match(_this.searchInput); //  console.log(this.responseAxios.forEach(el=>console.log(el.generatedUrl)));
+
+        console.log('q pasa');
       });
     }
   },
@@ -2184,8 +2197,8 @@ __webpack_require__.r(__webpack_exports__);
 
       var generatedUrl = refs.generatedUrl[id].value;
       var redirectionUrl = refs.redirectionUrl[id].value; // let formPosition= this.$refs.formPosition.indexOf(this.$refs.formPosition[id]);
+      //  this.link += refs.generatedUrl[id].value
 
-      this.link += refs.generatedUrl[id].value;
       axios.post("/qrpages/updateResource", {
         generatedUrl: generatedUrl,
         redirectionUrl: redirectionUrl
@@ -2211,6 +2224,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     resetForm1: function resetForm1() {
+      // el.value=''
       this.$refs["generatedUrlCreate"].value = "";
     },
     resetForm2: function resetForm2() {
@@ -2230,7 +2244,7 @@ __webpack_require__.r(__webpack_exports__);
 
         _this4.updateChangesWhenCreate();
       })["catch"](function (error) {
-        console.log(error.response);
+        console.log(error.response.data, 'err');
       });
     },
     updateChangesWhenCreate: function updateChangesWhenCreate() {
@@ -2244,10 +2258,10 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     checkForm: function checkForm(refs) {
-      this.errors = []; // console.log(refs, index, 'check form');
+      // this.errors = [];
+      // console.log(refs, index, 'check form');
       // let formPosition= this.$refs.formPosition.indexOf(this.$refs.formPosition[id]);
       // console.log(this.$refs.formPosition.indexOf(this.$refs.formPosition[index]) );
-
       if (this.responseStatus === 200) {// this.status200 = "Sent properly to DataBase";
         // alert( "Sent properly to DataBase");
       }
@@ -2258,9 +2272,9 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (!refs) {
-        this.errors.push("RedirectionUrl required");
-        console.log(this.errors); //  this.errors.forEach(e => console.log(e, 'foreach'));
-        // alert("RedirectionUrl required");
+        //  this.errors.push("RedirectionUrl required");
+        console.log(this.errors.message);
+        this.errors.message = 'RedirectionUrl required'; //  this.errors.forEach(e => console.log(e, 'foreach'));
       }
 
       if (!this.errors.length) {
@@ -6900,7 +6914,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.updateFormInner {\n    width: 100% !important;\n    margin: 0 auto;\n}\n.upAndDelFormContainer {\n    width: 92%;\n    margin: 50px auto;\n}\n.trashBin,\n.saveBtn,\n.printIcon {\n    width: 30px !important;\n    background: none;\n    /* border: none !important; */\n}\n.Iprint{\n/* color: rgb(6, 86, 172); */\n color: #435d7d;\n}\n.Isave{\ncolor: rgb(255, 202, 40);\n}\n.ItrashBin{\ncolor: rgb(241, 89, 156);\n}\n.displayMessage {\n    display: none;\n}\n#myImg{\n    width: 50px;\n    height: 50px;\n}\n.inputContainer{\n        position: relative;\n        width: 30%;\n}\n.qrInput{\n       position: relative;\n}\n.resetIcon{\n    position: absolute;\n    right: 5%;\n    top: 30% !important;\n    color: gray;\n}\n.qrInputCreate{\n    width: 100% !important;\n}\n.everyOtherColor{\nbackground-color: rgb(251, 251, 251);\n}\n", ""]);
+exports.push([module.i, "\n.updateFormInner {\n    width: 100% !important;\n    margin: 0 auto;\n}\n.upAndDelFormContainer {\n    width: 92%;\n    margin: 50px auto;\n}\n.trashBin,\n.saveBtn,\n.printIcon {\n    width: 30px !important;\n    background: none;\n    /* border: none !important; */\n}\n/* .trashBin:hover::after{\n\n    background: none;\n    content: 'Delete URLs';\n} */\n.Iprint{\n/* color: rgb(6, 86, 172); */\n color: #435d7d;\n}\n.Isave{\ncolor: rgb(255, 202, 40);\n}\n.ItrashBin{\ncolor: rgb(241, 89, 156);\n}\n.displayMessage {\n    display: none;\n}\n#myImg{\n    width: 50px;\n    height: 50px;\n}\n.inputContainer{\n        position: relative;\n        width: 30%;\n}\n.qrInput{\n       position: relative;\n}\n.resetIcon{\n    position: absolute;\n    right: 5%;\n    top: 30% !important;\n    color: gray;\n}\n.qrInputCreate{\n    width: 100% !important;\n}\n.everyOtherColor{\nbackground-color: rgb(251, 251, 251);\n}\n\n/* button{\n  border: none;\n  width: 32px;\n  height: 32px;\n  background-color: red;\n  transition: all ease-in-out 0.1s;\n  cursor: pointer;\n} */\n/* button:hover{ */\n  /* border: 1px solid #888;\n  background-color: #ddd;\n} */\n", ""]);
 
 // exports
 
@@ -38999,7 +39013,12 @@ var render = function() {
             ],
             ref: "generatedUrlCreate",
             staticClass: " qrInput generatedUrl qrInputCreate",
-            attrs: { type: "text", placeholder: "Reference" },
+            attrs: {
+              type: "text",
+              placeholder: "Reference",
+              name: "generatedUrlCreate",
+              required: ""
+            },
             domProps: { value: _vm.generatedUrlCreate },
             on: {
               input: function($event) {
@@ -39034,7 +39053,7 @@ var render = function() {
             ],
             ref: "redirectionUrlCreate",
             staticClass: "qrInput redirectionUrl qrInputCreate",
-            attrs: { type: "text", placeholder: "URL" },
+            attrs: { type: "text", placeholder: "URL", required: "" },
             domProps: { value: _vm.redirectionUrlCreate },
             on: {
               input: function($event) {
@@ -39061,7 +39080,7 @@ var render = function() {
           "button",
           {
             staticClass: "qrBtn saveBtn",
-            attrs: { type: "submit" },
+            attrs: { type: "submit", title: "Add new URL" },
             on: {
               click: function($event) {
                 $event.preventDefault()
@@ -39079,101 +39098,129 @@ var render = function() {
     _c(
       "form",
       { staticClass: "forms" },
-      _vm._l(_vm.responseAxios, function(url, index) {
-        return _c(
-          "div",
-          {
-            key: index,
-            staticClass: "formInner updateFormInner",
-            class: { everyOtherColor: index % 2 == 0 }
-          },
-          [
-            _vm._l(_vm.errors, function(error) {
-              return _c(
-                "div",
-                { key: error, staticClass: "FormValidationContainer" },
-                [
-                  _vm.errors.length
-                    ? _c("p", [
-                        _c("b", [
-                          _vm._v("Please correct the following error(s):")
-                        ]),
-                        _vm._v(" "),
-                        _c("ul", [_c("li", [_vm._v(_vm._s(error))])])
-                      ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _c("p", [_vm._v(_vm._s(_vm.status200))])
-                ]
-              )
-            }),
-            _vm._v(" "),
-            _c(
-              "a",
-              {
-                attrs: {
-                  href: _vm.link + url.generatedUrl,
-                  target: "_blank",
-                  id: "qrLink"
-                }
-              },
-              [_c("i", { staticClass: "fas fa-print Iprint" })]
-            ),
-            _vm._v(" "),
-            _c("input", {
-              ref: "generatedUrl",
-              refInFor: true,
-              staticClass: " qrInput generatedUrl",
-              attrs: { id: "generatedUrl", type: "text", disabled: "" },
-              domProps: { value: url.generatedUrl }
-            }),
-            _vm._v(" "),
-            _c("input", {
-              ref: "redirectionUrl",
-              refInFor: true,
-              staticClass: "qrInput",
-              attrs: { type: "text", id: "" },
-              domProps: { value: url.redirectionUrl }
-            }),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "saveBtn",
-                attrs: { type: "submit" },
-                on: {
-                  click: function($event) {
-                    $event.preventDefault()
-                    return _vm.updateResource(_vm.$refs, index)
-                  }
-                }
-              },
-              [_c("i", { staticClass: "fa fa-save Isave" })]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "trashBin",
-                on: {
-                  click: [
-                    function($event) {
-                      return _vm.deleteChanges(url.id)
-                    },
-                    function($event) {
-                      $event.preventDefault()
-                      return _vm.deleteResource(_vm.$refs, index)
-                    }
-                  ]
-                }
-              },
-              [_c("i", { staticClass: "fa fa-trash ItrashBin" })]
-            )
+      [
+        _c("label", { attrs: { for: "searchInput" } }, [_vm._v("Search:")]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.searchInput,
+              expression: "searchInput"
+            }
           ],
-          2
-        )
-      }),
-      0
+          attrs: { type: "text" },
+          domProps: { value: _vm.searchInput },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.searchInput = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        _vm._l(_vm.responseAxios, function(url, index) {
+          return _c(
+            "div",
+            {
+              key: index,
+              staticClass: "formInner updateFormInner",
+              class: { everyOtherColor: index % 2 == 0 }
+            },
+            [
+              _vm._l(_vm.errors, function(error, index) {
+                return _c(
+                  "div",
+                  {
+                    key: index.message,
+                    staticClass: "FormValidationContainer"
+                  },
+                  [
+                    _c("p", [
+                      _c("b", [
+                        _vm._v("Please correct the following error(s):")
+                      ]),
+                      _vm._v(" "),
+                      _c("ul", [_c("li", [_vm._v(_vm._s(index.message))])])
+                    ]),
+                    _vm._v(" "),
+                    _c("p", [_vm._v(_vm._s(_vm.status200))])
+                  ]
+                )
+              }),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: {
+                    href: _vm.link + url.generatedUrl,
+                    target: "_blank",
+                    id: "qrLink",
+                    title: "Print"
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-print Iprint" })]
+              ),
+              _vm._v(" "),
+              _c("input", {
+                ref: "generatedUrl",
+                refInFor: true,
+                staticClass: " qrInput generatedUrl",
+                attrs: { id: "generatedUrl", type: "text", disabled: "" },
+                domProps: { value: url.generatedUrl }
+              }),
+              _vm._v(" "),
+              _c("input", {
+                ref: "redirectionUrl",
+                refInFor: true,
+                staticClass: "qrInput",
+                attrs: { type: "text", id: "", required: "" },
+                domProps: { value: url.redirectionUrl }
+              }),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "saveBtn",
+                  attrs: { type: "submit", title: "Update redirection URL" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.updateResource(_vm.$refs, index)
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fa fa-save Isave" })]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "trashBin",
+                  attrs: { title: "Delete URLs" },
+                  on: {
+                    click: [
+                      function($event) {
+                        return _vm.deleteChanges(url.id)
+                      },
+                      function($event) {
+                        $event.preventDefault()
+                        return _vm.deleteResource(_vm.$refs, index)
+                      }
+                    ]
+                  }
+                },
+                [_c("i", { staticClass: "fa fa-trash ItrashBin" })]
+              )
+            ],
+            2
+          )
+        })
+      ],
+      2
     )
   ])
 }
